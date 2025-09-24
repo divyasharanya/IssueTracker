@@ -1,0 +1,108 @@
+<form (ngSubmit)="onSubmit()" #issueForm="ngForm">
+  <div class="modal-header">
+    <h5 class="modal-title">{{isEdit ? 'Edit Issue' : 'Create New Issue'}}</h5>
+    <button type="button" class="btn-close" (click)="onCancel()"></button>
+  </div>
+  
+  <div class="modal-body">
+    <!-- Error Message -->
+    <div *ngIf="error" class="alert alert-danger" role="alert">
+      {{error}}
+      <button type="button" class="btn-close ms-2" (click)="clearError()"></button>
+    </div>
+
+    <!-- Title Field -->
+    <div class="mb-3">
+      <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
+      <input
+        type="text"
+        id="title"
+        name="title"
+        class="form-control"
+        [(ngModel)]="title"
+        required
+        maxlength="200"
+        placeholder="Enter issue title..."
+        [class.is-invalid]="!title.trim() && issueForm.submitted"
+      />
+      <div *ngIf="!title.trim() && issueForm.submitted" class="invalid-feedback">
+        Title is required
+      </div>
+    </div>
+
+    <!-- Description Field -->
+    <div class="mb-3">
+      <label for="description" class="form-label">Description</label>
+      <textarea
+        id="description"
+        name="description"
+        class="form-control"
+        rows="4"
+        [(ngModel)]="description"
+        maxlength="1000"
+        placeholder="Enter issue description (optional)..."
+      ></textarea>
+      <div class="form-text">{{description.length}}/1000 characters</div>
+    </div>
+
+    <!-- Status and Priority Row -->
+    <div class="row">
+      <!-- Status Field -->
+      <div class="col-md-6 mb-3">
+        <label for="status" class="form-label">Status</label>
+        <select
+          id="status"
+          name="status"
+          class="form-select"
+          [(ngModel)]="status"
+          required
+        >
+          <option *ngFor="let statusOption of statuses" [value]="statusOption">
+            {{statusOption}}
+          </option>
+        </select>
+      </div>
+
+      <!-- Priority Field -->
+      <div class="col-md-6 mb-3">
+        <label for="priority" class="form-label">Priority</label>
+        <select
+          id="priority"
+          name="priority"
+          class="form-select"
+          [(ngModel)]="priority"
+          required
+        >
+          <option *ngFor="let priorityOption of priorities" [value]="priorityOption">
+            {{priorityOption}}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Assignee Field -->
+    <div class="mb-3">
+      <label for="assignee" class="form-label">Assignee</label>
+      <input
+        type="email"
+        id="assignee"
+        name="assignee"
+        class="form-control"
+        [(ngModel)]="assignee"
+        maxlength="100"
+        placeholder="Enter assignee email (optional)..."
+      />
+      <div class="form-text">Leave empty to keep unassigned</div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="onCancel()" [disabled]="loading">
+      Cancel
+    </button>
+    <button type="submit" class="btn btn-primary" [disabled]="loading || !title.trim()">
+      <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status"></span>
+      {{isEdit ? 'Update Issue' : 'Create Issue'}}
+    </button>
+  </div>
+</form>
